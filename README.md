@@ -3,8 +3,7 @@
 Fully automates TypingClub lessons from inside chromium and reads the lesson text straight from the DOM
 and types it back through trusted CDP input with human-like timing.
 
-## Setup (on your Arch box)
-
+## Setup
 ```bash
 cd ~/workspace/typingclub_bot
 npm install
@@ -57,45 +56,3 @@ node src/index.js --wpm 52 --lessons 6   # overrides
   game frame is re-found fresh on every read (lesson pages remount
   iframes, which stales held references).
 
-## Why it's hard to catch
-
-- **Trusted input.** Every keystroke goes through Chrome DevTools Protocol
-  (`page.keyboard`), producing `isTrusted = true` keydown/keypress/keyup —
-  indistinguishable from a physical keyboard. We never dispatch synthetic
-  events and never call the page's internal JS APIs (what the known cheat
-  scripts do — zero input events, far more suspicious).
-- **Human timing model** (`src/timing.js`): lognormal inter-key intervals,
-  word-boundary and line-break pauses, fast double-letters, QWERTY-adjacent
-  fat-fingers with backspace corrections, per-session WPM drift.
-- **Human sessions**: random 4–9 lesson runs, 30s–2min breaks between lessons,
-  a real 7–20 min break every 6 lessons, results-screen "reading" pauses.
-- **Stealth browser**: `playwright-extra` + stealth plugin scrubs
-  `navigator.webdriver` and the usual automation fingerprints; persistent
-  profile with a real login; headed window so focus/visibility checks pass.
-- **Identity matching**: WPM/accuracy tuned to the account's own history.
-
-## Honest limits
-
-- "Very hard to catch" is not "impossible". Behavioral forensics (deep
-  keystroke-dynamics analysis) could in principle flag any bot; TypingClub is
-  a kids' typing site, not a bank, and is unlikely to run that.
-- DOM selectors were calibrated by probe against the school edition
-  (academyfse.edclub.com, Oct 2026), but EdClub can restyle at any time —
-  if the bot reports "no target characters found", re-run `npm run probe`
-  and paste the output.
-## Troubleshooting
-
-- **"Still not detecting a lesson"**: every 30s the bot prints a diagnostic
-  dump (URL, frames, and match counts for every selector it tries). Paste
-  that output back — the selectors get fixed from evidence, not guesses.
-  Common causes: TypingClub restyled since the reference scripts, or the
-  lesson loads inside an iframe (the bot now searches all frames).
-- **Doubled keys / cursor issues**: run `npm run probe` with the lesson open
-  (game started, if it's a game), press Enter, and paste the JSON dump.
-  If verification ever misbehaves, set `cursorVerify: false` in
-  `src/config.js` to run open-loop.
-- **Game skipped**: if a game iframe never exposes `window.core` (a variant
-  built differently), the bot skips it cleanly after ~20s — the session moves
-  on without hanging. Paste the probe output for that game so support can
-  be added.
-- Keep sessions sane: sane hours, sane lesson counts, WPM near history.
