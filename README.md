@@ -1,7 +1,6 @@
 # TypingClub Bot (stealth Playwright)
 
-Fully automates TypingClub lessons from inside a real Chromium — no OCR, no
-screen capture, no Wayland hacks. Reads the lesson text straight from the DOM
+Fully automates TypingClub lessons from inside chromium and reads the lesson text straight from the DOM
 and types it back through trusted CDP input with human-like timing.
 
 ## Setup (on your Arch box)
