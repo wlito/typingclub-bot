@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "playwright": "*",
+    "playwright-extra": "*",
+    "puppeteer-extra-plugin-stealth": "*"
+  },
+  "description": "Stealth Playwright automation for TypingClub lessons (Arch Linux)",
+  "name": "typingclub-bot",
+  "scripts": {
+    "start": "node src/index.js",
+    "probe": "node src/probe.js",
+    "test": "node --test test/regression.test.cjs"
+  },
+  "type": "module",
+  "version": "0.1.0"
+}
